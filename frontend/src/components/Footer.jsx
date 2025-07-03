@@ -20,6 +20,16 @@ const Footer = () => {
                 <li>Privacy policy</li>
             </ul>
         </div>
+        <div>
+          <p className='text-xl font-medium mb-5'>GET IN TOUCH</p>
+          <ul className='flex flex-col gap-1 text-gray-600'></ul>
+            <li>+94-76-434-6350</li>
+            <li>contact@Belivewaveforyou.com</li>
+        </div>
+      </div>
+      <div>
+        <hr />
+        <p className='py-5 text-sm text-center'>Copyright 2024@ Rynza.com - All Right Reserved.</p>
       </div>
     </div>
   )
