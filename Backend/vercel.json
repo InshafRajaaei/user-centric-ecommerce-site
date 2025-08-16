@@ -1,14 +1,14 @@
 {
   "functions": {
-    "api/server.js": {
+    "server.js": {
       "runtime": "vercel-nodejs@18.0.0",
-      "includeFiles": "dist/**"
+      "includeFiles": "config/**,controllers/**,middleware/**,models/**,routes/**"
     }
   },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/server.js"
+      "dest": "/server.js"
     }
   ]
 }
