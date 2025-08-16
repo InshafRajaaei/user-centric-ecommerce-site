@@ -58,7 +58,7 @@ const Navbar = () => {
             </div>
             <Link to='/cart' className='relative'>
             <img src={assets.cart_icon} className='w-5 min-w-5' alt="" />
-            <p className='absolute right-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount()}</p>
+            <p className='absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-4 h-4 flex items-center justify-center bg-black text-white rounded-full text-[8px]'>{getCartCount()}</p>
             </Link>
             <img onClick={()=>setVisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden' alt="" />
 

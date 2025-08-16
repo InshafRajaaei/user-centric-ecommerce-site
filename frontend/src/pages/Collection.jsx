@@ -109,6 +109,9 @@ const Collection = () => {
         <p className='flex gap-2'>
           <input className='w-3' type="checkbox" value={"Kids"} onChange={toggleCategory}/> Kids
         </p>
+        {/* <p className='flex gap-2'>
+          <input className='w-3' type="checkbox" value={"Home"} onChange={toggleCategory}/> Home
+        </p> */}
       </div>
       </div>
       {/* SubCatagory Filter */}
@@ -124,6 +127,10 @@ const Collection = () => {
         <p className='flex gap-2'>
           <input className='w-3' type="checkbox" value={"Winterwear"} onChange={toggleSubCategory}/> Winterwear
         </p>
+        {/* <p className='flex gap-2'>
+          <input className='w-3' type="checkbox" value={"Accessories"} onChange={toggleSubCategory}/> Accessories
+        </p> */}
+        
       </div>
       </div>
     </div>

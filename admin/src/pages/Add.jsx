@@ -101,6 +101,9 @@ const Add = ({token}) => {
             <option value="Men">Men</option>
             <option value="Women">Women</option>
             <option value="Kids">Kids</option>
+            {/* <option value="Home">Home</option>
+            <option value="Assecories">Assecories</option>
+            <option value="Toys">Toys</option> */}
           </select>
         </div>
         <div>
@@ -109,6 +112,13 @@ const Add = ({token}) => {
             <option value="Topwear">Topwear</option>
             <option value="Bottomwear">Bottomwear</option>
             <option value="Winterwear">Winterwear</option>
+            {/* <option value="Traditional">Traditional</option>
+            <option value="Formal">Formal</option>
+            <option value="Casual">Casual</option>
+            <option value="Wedding">Wedding</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Decor">Home Decor</option>
+            <option value="Dining">Dining</option> */}
           </select>
         </div>
         <div>
@@ -139,6 +149,18 @@ const Add = ({token}) => {
           <div onClick={()=>setSizes(prev => prev.includes("XXL") ? prev.filter(item => item !== "XXL") : [...prev,"XXL"])}>
             <p className={`${sizes.includes("XXL") ? "bg-pink-100" : "bg-slate-200" } px-3 py-1 cursor-pointer`}>XXL</p>
           </div>
+
+          {/* <div onClick={()=>setSizes(prev => prev.includes("Free Size") ? prev.filter(item => item !== "Free Size") : [...prev,"Free Size"])}>
+            <p className={`${sizes.includes("Free Size") ? "bg-pink-100" : "bg-slate-200" } px-3 py-1 cursor-pointer`}>Free Size</p>
+          </div> */}
+
+          {/* <div onClick={()=>setSizes(prev => prev.includes("XXL") ? prev.filter(item => item !== "XXL") : [...prev,"XXL"])}>
+            <p className={`${sizes.includes("XXL") ? "bg-pink-100" : "bg-slate-200" } px-3 py-1 cursor-pointer`}>XXL</p>
+          </div>
+
+          <div onClick={()=>setSizes(prev => prev.includes("XXL") ? prev.filter(item => item !== "XXL") : [...prev,"XXL"])}>
+            <p className={`${sizes.includes("XXL") ? "bg-pink-100" : "bg-slate-200" } px-3 py-1 cursor-pointer`}>XXL</p>
+          </div> */}
         </div>
       </div>
 
