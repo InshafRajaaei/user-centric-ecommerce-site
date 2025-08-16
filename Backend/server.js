@@ -31,3 +31,4 @@ app.get('/', (req, res) => {
 // ❌ Remove app.listen()
 // ✅ Export app instead
 export default app
+app.listen(port, ()=> console.log('Server started on PORT : '+ port))
