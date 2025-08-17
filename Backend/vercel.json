@@ -6,8 +6,19 @@
       "use": "@vercel/node",
       "config": {
         "nodeVersion": "20.x",
-        "source": "server.js"
+        "supportsResponseStreaming": true
       }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/.*",
+      "dest": "server.js",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
     }
   ]
 }
