@@ -32,7 +32,10 @@ app.get('/',(req,res)=>{
 app.listen(port, ()=> console.log('Server started on PORT : '+ port))
 
 // Export for Vercel serverless functions
-if (typeof module !== 'undefined') module.exports = app;
-else app.listen(process.env.PORT || 4000, () => 
-  console.log(`API Working on ${process.env.PORT || 4000}`)
-);
+export default app;
+
+// Local development fallback
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => console.log(`API Working on ${PORT}`));
+}
