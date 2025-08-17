@@ -5,15 +5,16 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "nodeVersion": "20.x",  
-        "includeFiles": ["**/*.js", "**/*.json", "**/*.mjs"]
+        "nodeVersion": "20.x",
+        "supportsResponseStreaming": true
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "server.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
     }
   ]
 }
