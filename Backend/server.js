@@ -29,21 +29,4 @@ app.get('/',(req,res)=>{
     res.send("API Working")
 })
 
-const handler = async (req, res) => {
-  // Ensure proper path handling
-  req.url = req.url.replace(/^\/api/, '');
-  return app(req, res);
-};
-
 app.listen(port, ()=> console.log('Server started on PORT : '+ port))
-
-export default handler;
-
-// Local development fallback
-if (process.env.VERCEL !== '1') {
-  const PORT = process.env.PORT || 4000;
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Try http://localhost:${PORT}/api/product/list`);
-  });
-}

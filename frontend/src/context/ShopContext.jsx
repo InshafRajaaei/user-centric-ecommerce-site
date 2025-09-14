@@ -71,9 +71,6 @@ const ShopContextProvider = (props) => {
         return totalCount;
     }
 
-    // useEffect(()=>{
-    //     console.log(cartItems);
-    // },[cartItems])
 
     const updateQuantity = async (itemId,size,quantity) => {
 
