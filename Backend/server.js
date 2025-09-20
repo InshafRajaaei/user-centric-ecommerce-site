@@ -11,8 +11,8 @@ import orderRouter from './routes/orderRoute.js'
 // App Config
 const app = express()
 const port = process.env.PORT || 4000
-connectDB()
-connectCloudinary()
+// connectDB()
+// connectCloudinary()
 
 // middlewares
 
@@ -29,4 +29,11 @@ app.get('/',(req,res)=>{
     res.send("API Working")
 })
 
-app.listen(port, ()=> console.log('Server started on PORT : '+ port))
+// Only listen if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  connectDB()
+  connectCloudinary()
+  app.listen(port, () => console.log('Server started on PORT : ' + port))
+}
+export default app
+// app.listen(port, ()=> console.log('Server started on PORT : '+ port))
