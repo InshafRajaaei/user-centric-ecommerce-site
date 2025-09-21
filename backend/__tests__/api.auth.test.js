@@ -102,7 +102,7 @@ describe('POST /api/user/login', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(false);
-    // ✅ updated to match your controller
+    // ✅ updated to match your controller good for tests
     expect(response.body.message).toContain('User not found');
   });
 });
