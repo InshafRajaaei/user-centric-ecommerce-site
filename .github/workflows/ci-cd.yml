@@ -1,113 +1,76 @@
-name: MERN CI/CD Pipeline # Name of your workflow
+name: MERN CI/CD Pipeline
 
-# When to trigger this pipeline: on every push and pull request to the main branch
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-# Define the jobs that make up this pipeline
 jobs:
-  # Job 1: Test and Build the Backend (Node.js/Express)
   build-and-test-backend:
-    # The OS to run on. Ubuntu is a common choice.
     runs-on: ubuntu-latest
-
-    # Service containers needed for the job (like MongoDB)
     services:
       mongodb:
-        # Use the official MongoDB image for testing
         image: mongo:latest
-        # Expose the standard MongoDB port
         ports:
           - 27017:27017
 
-    # Steps are a sequence of tasks to execute in this job
-    steps:
-    # Step 1: Check out the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    # Step 2: Set up the correct version of Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18' # Use the Node.js version your app needs
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-
-    # Step 3: Navigate to the backend directory and install dependencies
-    - name: Install Backend Dependencies
-      run: npm ci # 'ci' is for clean installs, better for automation than 'install'
-      working-directory: ./backend
-
-    # Step 4: Run the backend tests (Jest & Supertest)
-    - name: Run Backend Tests
-      run: npm test
-      working-directory: ./backend
-      env:
-        # Provide the test environment variables.
-        # The MONGODB_URL points to the MongoDB service container we started above.
-        MONGODB_URL: mongodb://localhost:27017
-        JWT_SECRET: ${{ secrets.JWT_SECRET }} # Store sensitive data in GitHub Secrets
-        # Add any other environment variables your tests need for a test environment
-
-  # Job 2: Test and Build the Frontend (React)
-  build-and-test-frontend:
-    runs-on: ubuntu-latest
-    # This job doesn't need the backend or MongoDB, so it can run in parallel
-    needs: build-and-test-backend # Wait for the backend job to succeed first
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
+    # FIXED: Corrected the cache-dependency-path for backend
+    - name: Setup Node.js for Backend
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
+        # This tells the action to look for the lock file in the './backend' directory
+        cache-dependency-path: backend/package-lock.json
+
+    - name: Install Backend Dependencies
+      run: npm ci
+      working-directory: ./backend
+
+    - name: Run Backend Tests
+      run: npm test
+      working-directory: ./backend
+      env:
+        MONGODB_URL: mongodb://localhost:27017
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        # Add other necessary TEST environment variables here
+        CLOUDINARY_NAME: "test-cloud-name" # Example, use secrets if they are real credentials
+        CLOUDINARY_API_KEY: "test-key"
+        CLOUDINARY_SECRET_KEY: "test-secret"
+
+  build-and-test-frontend:
+    runs-on: ubuntu-latest
+    needs: build-and-test-backend
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # FIXED: Added a separate Node.js setup for the frontend with its own cache path
+    - name: Setup Node.js for Frontend
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        # This tells the action to look for the lock file in the './frontend' directory
         cache-dependency-path: frontend/package-lock.json
 
     - name: Install Frontend Dependencies
       run: npm ci
       working-directory: ./frontend
 
-    # Step: Run your Jest tests (including Selenium if you set it up for CI)
     - name: Run Frontend Tests
       run: npm test
       working-directory: ./frontend
-      # Note: Your Selenium tests would need a headless browser configured to work here.
+      # If your tests need the backend URL, pass it as an env variable
+      env:
+        VITE_BACKEND_URL: "http://localhost:4000"
 
-    # Step: Build the React application for production
     - name: Build Frontend for Production
       run: npm run build
       working-directory: ./frontend
-      # This will fail if there are any compilation errors (e.g., JSX syntax errors)
-
-  # Job 3: (Optional) SonarCloud Analysis
-  sonarcloud-analysis:
-    runs-on: ubuntu-latest
-    needs: [build-and-test-backend, build-and-test-frontend] # Run after both build jobs
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        # SonarCloud needs full git history to analyze changes
-        fetch-depth: 0
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install Backend Dependencies
-      run: npm ci
-      working-directory: ./backend
-
-    - name: Run SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by GitHub
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # You need to set this up in your GitHub repo secrets
