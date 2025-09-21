@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary"
 import productModel from "../models/productModel.js"
-import { Await, resolvePath } from "react-router-dom"
+//import { Await, resolvePath } from "react-router-dom"
 
 // function for add product
 const addProduct = async (req,res) => {
