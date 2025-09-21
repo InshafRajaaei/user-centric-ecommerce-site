@@ -1,4 +1,5 @@
-module.exports = {
+// jest.config.js
+export default {
   testEnvironment: 'node',
   collectCoverageFrom: [
     '**/*.js',
@@ -11,5 +12,5 @@ module.exports = {
   coverageDirectory: 'coverage',
   testPathIgnorePatterns: ['/node_modules/'],
   setupFilesAfterEnv: ['./tests/setup.js'],
-  transform: {} // disables Babel - Node will handle ESM
+  transform: {}  // disables Babel - Node handles ESM automatically
 };

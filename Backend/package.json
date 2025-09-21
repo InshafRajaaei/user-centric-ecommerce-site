@@ -12,9 +12,6 @@
     "test:api": "cross-env NODE_ENV=test node --experimental-vm-modules ./node_modules/jest/bin/jest.js tests/api/ --detectOpenHandles --forceExit",
     "test:bdd": "cucumber-js"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
