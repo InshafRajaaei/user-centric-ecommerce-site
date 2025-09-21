@@ -4,6 +4,8 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 let mongoServer;
 
+jest.setTimeout(30000); // ⏱ prevent timeout issues
+
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
@@ -19,6 +21,6 @@ afterEach(async () => {
 
 afterAll(async () => {
   await mongoose.connection.dropDatabase();
-  await mongoose.disconnect();
+  await mongoose.connection.close(); // ✅ safer than disconnect()
   await mongoServer.stop();
 });
