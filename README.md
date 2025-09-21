@@ -158,6 +158,4 @@ UI crafted with Tailwind CSS
 
 Icons from open source libraries
 
-Community support & contributions
-
 ⭐ If you like this project, consider giving it a star!

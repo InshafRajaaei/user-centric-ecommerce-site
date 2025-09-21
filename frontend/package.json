@@ -10,7 +10,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:components": "jest src/tests/components/ --watch",
-    "test:ui": "jest tests/login.test.js"
+    "test:ui": "jest tests/login.test.js",
+    "test:e2e": "start-server-and-test dev http://localhost:5173 jest"
   },
   "dependencies": {
     "axios": "^1.11.0",
@@ -33,6 +34,7 @@
     "jsdom": "^27.0.0",
     "postcss": "^8.4.0",
     "selenium-webdriver": "^4.35.0",
+    "start-server-and-test": "^2.1.2",
     "tailwindcss": "^3.4.0",
     "vite": "^5.0.0"
   }
