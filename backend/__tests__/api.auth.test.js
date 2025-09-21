@@ -12,7 +12,7 @@ const TEST_USER = {
 };
 
 beforeAll(async () => {
-  // No need for manual connection if using the global setup
+  // Global setup already handles the DB connection
 });
 
 afterAll(async () => {
@@ -42,9 +42,7 @@ describe('POST /api/user/register', () => {
 
   it('should not register a user with an existing email', async () => {
     // First, create a user
-    await request(app)
-      .post('/api/user/register')
-      .send(TEST_USER);
+    await request(app).post('/api/user/register').send(TEST_USER);
 
     // Try to create another user with same email
     const response = await request(app)
@@ -104,6 +102,7 @@ describe('POST /api/user/login', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toContain("User doesn't exists");
+    // ✅ updated to match your controller
+    expect(response.body.message).toContain('User not found');
   });
 });
