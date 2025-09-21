@@ -1,66 +1,109 @@
-// __tests__/api.auth.test.js
-import request from "supertest";
-import bcrypt from "bcrypt";
-import app from "../server.js";
-import userModel from "../models/userModel.js";
+import request from 'supertest';
+import mongoose from 'mongoose';
+import app from '../server.js';
+import userModel from '../models/userModel.js';
+import bcrypt from 'bcrypt';
 
-describe("POST /api/user/login", () => {
-  it("should log in successfully with correct credentials", async () => {
-    const plainPassword = "password123";
-    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+// Test user data
+const TEST_USER = {
+  name: 'Test User',
+  email: 'test@example.com',
+  password: 'password123'
+};
 
-    const testUser = new userModel({
-      name: "Auth Test User",
-      email: "auth@example.com",
-      password: hashedPassword,
-    });
-    await testUser.save();
+beforeAll(async () => {
+  // No need for manual connection if using the global setup
+});
 
+afterAll(async () => {
+  await mongoose.disconnect();
+});
+
+beforeEach(async () => {
+  await userModel.deleteMany({});
+});
+
+describe('POST /api/user/register', () => {
+  it('should register a new user successfully', async () => {
     const response = await request(app)
-      .post("/api/user/login")
+      .post('/api/user/register')
+      .send(TEST_USER);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.token).toBeDefined();
+
+    // Verify user was actually created in database
+    const userInDb = await userModel.findOne({ email: TEST_USER.email });
+    expect(userInDb).toBeDefined();
+    expect(userInDb.name).toBe(TEST_USER.name);
+    expect(userInDb.email).toBe(TEST_USER.email);
+  });
+
+  it('should not register a user with an existing email', async () => {
+    // First, create a user
+    await request(app)
+      .post('/api/user/register')
+      .send(TEST_USER);
+
+    // Try to create another user with same email
+    const response = await request(app)
+      .post('/api/user/register')
+      .send(TEST_USER);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toContain('already exists');
+  });
+});
+
+describe('POST /api/user/login', () => {
+  beforeEach(async () => {
+    // Create a user before each login test
+    const hashedPassword = await bcrypt.hash(TEST_USER.password, 10);
+    await userModel.create({
+      name: TEST_USER.name,
+      email: TEST_USER.email,
+      password: hashedPassword
+    });
+  });
+
+  it('should log in successfully with correct credentials', async () => {
+    const response = await request(app)
+      .post('/api/user/login')
       .send({
-        email: "auth@example.com",
-        password: plainPassword,
+        email: TEST_USER.email,
+        password: TEST_USER.password
       });
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body).toHaveProperty("token");
+    expect(response.body.token).toBeDefined();
   });
 
-  it("should fail login with incorrect password", async () => {
-    const plainPassword = "password123";
-    const hashedPassword = await bcrypt.hash(plainPassword, 10);
-
-    const testUser = new userModel({
-      name: "Auth Wrong Password",
-      email: "wrongpass@example.com",
-      password: hashedPassword,
-    });
-    await testUser.save();
-
+  it('should fail login with incorrect password', async () => {
     const response = await request(app)
-      .post("/api/user/login")
+      .post('/api/user/login')
       .send({
-        email: "wrongpass@example.com",
-        password: "badpassword",
-      });
-
-    expect(response.statusCode).toBe(200); 
-    expect(response.body.success).toBe(false);
-    expect(response.body.message).toContain("Invalid");
-  });
-
-  it("should fail login for non-existent user", async () => {
-    const response = await request(app)
-      .post("/api/user/login")
-      .send({
-        email: "notfound@example.com",
-        password: "whatever123",
+        email: TEST_USER.email,
+        password: 'wrongpassword'
       });
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toContain("not found");
+    expect(response.body.message).toContain('Invalid credential');
+  });
+
+  it('should fail login for non-existent user', async () => {
+    const response = await request(app)
+      .post('/api/user/login')
+      .send({
+        email: 'nonexistent@example.com',
+        password: TEST_USER.password
+      });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toContain("User doesn't exists");
   });
 });

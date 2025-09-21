@@ -1,16 +1,10 @@
-// jest.config.js
+// backend/jest.config.mjs
 export default {
-  testEnvironment: 'node',
-  collectCoverageFrom: [
-    '**/*.js',
-    '!**/node_modules/**',
-    '!**/config/**',
-    '!**/coverage/**',
-    '!jest.config.js',
-    '!server.js'
-  ],
-  coverageDirectory: 'coverage',
-  testPathIgnorePatterns: ['/node_modules/'],
-  setupFilesAfterEnv: ['./tests/setup.js'],
-  transform: {}  // disables Babel - Node handles ESM automatically
+  transform: {
+    "^.+\\.jsx?$": "babel-jest"
+  },
+  testEnvironment: "node",
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  }
 };

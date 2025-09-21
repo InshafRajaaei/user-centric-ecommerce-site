@@ -1,26 +1,23 @@
-// tests/setup.js
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 let mongoServer;
 
-jest.setTimeout(30000); // ⏱ prevent timeout issues
-
-beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri);
-});
-
-afterEach(async () => {
-  const collections = mongoose.connection.collections;
-  for (const key in collections) {
-    await collections[key].deleteMany({});
+module.exports = async () => {
+  if (mongoose.connection.readyState === 0) {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    await mongoose.connect(uri);
+    console.log('Connected to in-memory MongoDB for testing');
   }
-});
+};
 
-afterAll(async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close(); // ✅ safer than disconnect()
-  await mongoServer.stop();
-});
+module.exports.teardown = async () => {
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect();
+  }
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
+  console.log('Disconnected from in-memory MongoDB');
+};
