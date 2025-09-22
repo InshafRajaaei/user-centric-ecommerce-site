@@ -76,6 +76,80 @@
 #       working-directory: ./frontend
 
 
+# name: MERN CI/CD Pipeline
+
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+
+# jobs:
+#   build-and-test-backend:
+#     runs-on: ubuntu-latest
+#     services:
+#       mongodb:
+#         image: mongo:latest
+#         ports:
+#           - 27017:27017
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     - name: Setup Node.js for Backend
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: '18'
+#         cache: 'npm'
+#         cache-dependency-path: backend/package-lock.json
+
+#     - name: Install Backend Dependencies
+#       run: npm ci
+#       working-directory: ./backend
+
+#     - name: Run Backend Tests
+#       run: npm test
+#       working-directory: ./backend
+#       env:
+#         MONGODB_URL: mongodb://localhost:27017
+#         JWT_SECRET: ${{ secrets.JWT_SECRET }}
+#         CLOUDINARY_NAME: "test-cloud-name"
+#         CLOUDINARY_API_KEY: "test-key"
+#         CLOUDINARY_SECRET_KEY: "test-secret"
+
+#   build-and-test-frontend:
+#     runs-on: ubuntu-latest
+#     needs: build-and-test-backend
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     - name: Setup Node.js for Frontend
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: '18'
+#         cache: 'npm'
+#         cache-dependency-path: frontend/package-lock.json
+
+#     - name: Install Frontend Dependencies
+#       run: npm ci
+#       working-directory: ./frontend
+
+#     # 🔑 THIS IS THE IMPORTANT BIT
+#     - name: Run Frontend E2E Tests (with server running)
+#       run: npm run test:e2e
+#       working-directory: ./frontend
+#       env:
+#         VITE_BACKEND_URL: "http://localhost:4000"
+#         APP_URL: "http://localhost:5173"
+
+#     - name: Build Frontend for Production
+#       run: npm run build
+#       working-directory: ./frontend
+
+
 name: MERN CI/CD Pipeline
 
 on:
@@ -137,7 +211,7 @@ jobs:
       run: npm ci
       working-directory: ./frontend
 
-    # 🔑 THIS IS THE IMPORTANT BIT
+    # 🔑 E2E Browser Testing
     - name: Run Frontend E2E Tests (with server running)
       run: npm run test:e2e
       working-directory: ./frontend
@@ -148,3 +222,78 @@ jobs:
     - name: Build Frontend for Production
       run: npm run build
       working-directory: ./frontend
+
+  sonarcloud-backend:
+    runs-on: ubuntu-latest
+    needs: build-and-test-backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed for SonarQube analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Backend Dependencies
+        run: npm ci
+        working-directory: ./backend
+
+      - name: Run Tests with Coverage
+        run: npm test -- --coverage
+        working-directory: ./backend
+        env:
+          MONGODB_URL: mongodb://localhost:27017
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: SonarCloud Scan - Backend
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./backend
+          args: >
+            -Dproject.settings=sonar-backend.properties
+            -Dsonar.projectKey=ryzna-ecommerce-backend
+            -Dsonar.projectName="RYNZA Backend"
+
+  sonarcloud-frontend:
+    runs-on: ubuntu-latest
+    needs: build-and-test-frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Run Tests with Coverage
+        run: npm test -- --coverage
+        working-directory: ./frontend
+
+      - name: SonarCloud Scan - Frontend
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./frontend
+          args: >
+            -Dproject.settings=sonar-frontend.properties
+            -Dsonar.projectKey=ryzna-ecommerce-frontend
+            -Dsonar.projectName="RYNZA Frontend"

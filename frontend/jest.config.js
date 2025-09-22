@@ -39,13 +39,35 @@
 // };
 
 // jest.config.js
-module.exports = {
-  // The test environment should be 'node' because we are controlling a browser from Node.js
-  testEnvironment: 'node',
+// module.exports = {
+//   // The test environment should be 'node' because we are controlling a browser from Node.js
+//   testEnvironment: 'node',
   
-  // Increase the timeout for tests (in milliseconds) because browser actions can be slow
-  testTimeout: 30000, // 30 seconds
+//   // Increase the timeout for tests (in milliseconds) because browser actions can be slow
+//   testTimeout: 30000, // 30 seconds
 
-  // Where to find our test files
-  testMatch: ['**/specs/**/*.test.js'],
+//   // Where to find our test files
+//   testMatch: ['**/specs/**/*.test.js'],
+// };
+
+// frontend/jest.config.js
+module.exports = {
+  // Keep Node environment if running E2E/browser automation from Node
+  testEnvironment: "node",
+  testTimeout: 30000,
+  verbose: true,
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"],
+  reporters: [
+    "default",
+    [
+      "jest-sonar",
+      {
+        outputDirectory: "coverage",
+        outputName: "sonar-report.xml"
+      }
+    ]
+  ],
+  testMatch: ["**/specs/**/*.test.js"]
 };
