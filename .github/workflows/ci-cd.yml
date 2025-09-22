@@ -70,7 +70,7 @@ jobs:
 
     # Run Selenium/Webdriver E2E tests
     - name: Run Frontend E2E Tests
-      run: npm run test:e2e
+      run: npx start-server-and-test "npm run dev -- --host 0.0.0.0" http://localhost:5173 "npm run test:e2e"
       working-directory: ./frontend
       env:
         VITE_BACKEND_URL: "http://localhost:4000"
