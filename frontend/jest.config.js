@@ -51,23 +51,16 @@
 // };
 
 // frontend/jest.config.js
+// frontend/jest.config.js
 module.exports = {
-  // Keep Node environment if running E2E/browser automation from Node
+  // Node env for e2e/browser automation tests
   testEnvironment: "node",
   testTimeout: 30000,
+
   verbose: true,
   collectCoverage: true,
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
-  reporters: [
-    "default",
-    [
-      "jest-sonar",
-      {
-        outputDirectory: "coverage",
-        outputName: "sonar-report.xml"
-      }
-    ]
-  ],
+
   testMatch: ["**/specs/**/*.test.js"]
 };
