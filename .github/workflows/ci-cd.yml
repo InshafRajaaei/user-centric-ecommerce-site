@@ -1,155 +1,3 @@
-# name: MERN CI/CD Pipeline
-
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
-
-# jobs:
-#   build-and-test-backend:
-#     runs-on: ubuntu-latest
-#     services:
-#       mongodb:
-#         image: mongo:latest
-#         ports:
-#           - 27017:27017
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
-
-#     # FIXED: Corrected the cache-dependency-path for backend
-#     - name: Setup Node.js for Backend
-#       uses: actions/setup-node@v4
-#       with:
-#         node-version: '18'
-#         cache: 'npm'
-#         # This tells the action to look for the lock file in the './backend' directory
-#         cache-dependency-path: backend/package-lock.json
-
-#     - name: Install Backend Dependencies
-#       run: npm ci
-#       working-directory: ./backend
-
-#     - name: Run Backend Tests
-#       run: npm test
-#       working-directory: ./backend
-#       env:
-#         MONGODB_URL: mongodb://localhost:27017
-#         JWT_SECRET: ${{ secrets.JWT_SECRET }}
-#         # Add other necessary TEST environment variables here
-#         CLOUDINARY_NAME: "test-cloud-name" # Example, use secrets if they are real credentials
-#         CLOUDINARY_API_KEY: "test-key"
-#         CLOUDINARY_SECRET_KEY: "test-secret"
-
-#   build-and-test-frontend:
-#     runs-on: ubuntu-latest
-#     needs: build-and-test-backend
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
-
-#     # FIXED: Added a separate Node.js setup for the frontend with its own cache path
-#     - name: Setup Node.js for Frontend
-#       uses: actions/setup-node@v4
-#       with:
-#         node-version: '18'
-#         cache: 'npm'
-#         # This tells the action to look for the lock file in the './frontend' directory
-#         cache-dependency-path: frontend/package-lock.json
-
-#     - name: Install Frontend Dependencies
-#       run: npm ci
-#       working-directory: ./frontend
-
-#     - name: Run Frontend Tests
-#       run: npm test
-#       working-directory: ./frontend
-#       # If your tests need the backend URL, pass it as an env variable
-#       env:
-#         VITE_BACKEND_URL: "http://localhost:4000"
-
-#     - name: Build Frontend for Production
-#       run: npm run build
-#       working-directory: ./frontend
-
-
-# name: MERN CI/CD Pipeline
-
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
-
-# jobs:
-#   build-and-test-backend:
-#     runs-on: ubuntu-latest
-#     services:
-#       mongodb:
-#         image: mongo:latest
-#         ports:
-#           - 27017:27017
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
-
-#     - name: Setup Node.js for Backend
-#       uses: actions/setup-node@v4
-#       with:
-#         node-version: '18'
-#         cache: 'npm'
-#         cache-dependency-path: backend/package-lock.json
-
-#     - name: Install Backend Dependencies
-#       run: npm ci
-#       working-directory: ./backend
-
-#     - name: Run Backend Tests
-#       run: npm test
-#       working-directory: ./backend
-#       env:
-#         MONGODB_URL: mongodb://localhost:27017
-#         JWT_SECRET: ${{ secrets.JWT_SECRET }}
-#         CLOUDINARY_NAME: "test-cloud-name"
-#         CLOUDINARY_API_KEY: "test-key"
-#         CLOUDINARY_SECRET_KEY: "test-secret"
-
-#   build-and-test-frontend:
-#     runs-on: ubuntu-latest
-#     needs: build-and-test-backend
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
-
-#     - name: Setup Node.js for Frontend
-#       uses: actions/setup-node@v4
-#       with:
-#         node-version: '18'
-#         cache: 'npm'
-#         cache-dependency-path: frontend/package-lock.json
-
-#     - name: Install Frontend Dependencies
-#       run: npm ci
-#       working-directory: ./frontend
-
-#     # 🔑 THIS IS THE IMPORTANT BIT
-#     - name: Run Frontend E2E Tests (with server running)
-#       run: npm run test:e2e
-#       working-directory: ./frontend
-#       env:
-#         VITE_BACKEND_URL: "http://localhost:4000"
-#         APP_URL: "http://localhost:5173"
-
-#     - name: Build Frontend for Production
-#       run: npm run build
-#       working-directory: ./frontend
-
-
 name: MERN CI/CD Pipeline
 
 on:
@@ -211,8 +59,15 @@ jobs:
       run: npm ci
       working-directory: ./frontend
 
-    # 🔑 E2E Browser Testing
-    - name: Run Frontend E2E Tests (with server running)
+    # Start dev server in background so Selenium has something to connect to
+    - name: Start Frontend Dev Server
+      run: npm run dev &
+      working-directory: ./frontend
+
+    - name: Wait until Frontend is Ready on :5173
+      run: npx wait-on http://localhost:5173
+
+    - name: Run Frontend E2E Tests
       run: npm run test:e2e
       working-directory: ./frontend
       env:
@@ -230,7 +85,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Needed for SonarQube analysis
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -251,7 +106,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: SonarCloud Scan - Backend
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -261,6 +116,7 @@ jobs:
             -Dproject.settings=sonar-backend.properties
             -Dsonar.projectKey=ryzna-ecommerce-backend
             -Dsonar.projectName="RYNZA Backend"
+            -Dsonar.organization=your-org-key-here
 
   sonarcloud-frontend:
     runs-on: ubuntu-latest
@@ -287,7 +143,7 @@ jobs:
         working-directory: ./frontend
 
       - name: SonarCloud Scan - Frontend
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -297,3 +153,4 @@ jobs:
             -Dproject.settings=sonar-frontend.properties
             -Dsonar.projectKey=ryzna-ecommerce-frontend
             -Dsonar.projectName="RYNZA Frontend"
+            -Dsonar.organization=your-org-key-here
