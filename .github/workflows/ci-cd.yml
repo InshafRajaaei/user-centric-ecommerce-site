@@ -16,64 +16,65 @@ jobs:
           - 27017:27017
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js for Backend
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
+      - name: Setup Node.js for Backend
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
-    - name: Install Backend Dependencies
-      run: npm ci
-      working-directory: ./backend
+      - name: Install Backend Dependencies
+        run: npm ci
+        working-directory: ./backend
 
-    - name: Run Backend Tests
-      run: npm test
-      working-directory: ./backend
-      env:
-        MONGODB_URL: mongodb://localhost:27017
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        CLOUDINARY_NAME: "test-cloud-name"
-        CLOUDINARY_API_KEY: "test-key"
-        CLOUDINARY_SECRET_KEY: "test-secret"
+      - name: Run Backend Tests
+        run: npm test
+        working-directory: ./backend
+        env:
+          MONGODB_URL: mongodb://localhost:27017
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CLOUDINARY_NAME: "test-cloud-name"
+          CLOUDINARY_API_KEY: "test-key"
+          CLOUDINARY_SECRET_KEY: "test-secret"
 
   build-and-test-frontend:
-    runs-on: ubuntu-latest
-    needs: build-and-test-backend
+      runs-on: ubuntu-latest
+      needs: build-and-test-backend
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-    - name: Setup Node.js for Frontend
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        - name: Setup Node.js for Frontend
+          uses: actions/setup-node@v4
+          with:
+            node-version: '18'
+            cache: 'npm'
+            cache-dependency-path: frontend/package-lock.json
 
-    - name: Install Frontend Dependencies
-      run: npm ci
-      working-directory: ./frontend
+        - name: Install Frontend Dependencies
+          run: npm ci
+          working-directory: ./frontend
 
-    # Run E2E Tests with Vite dev server using start-server-and-test
-    - name: Run Frontend E2E Tests
-      run: npx start-server-and-test "npm run dev -- --host 0.0.0.0" http://localhost:5173 "npm run test:e2e"
-      working-directory: ./frontend
-      env:
-        VITE_BACKEND_URL: "http://localhost:4000"
-        APP_URL: "http://localhost:5173"
+        # Run E2E Tests with Vite dev server properly bound
+        - name: Run Frontend E2E Tests
+          run: npx start-server-and-test "npm run dev -- --host 127.0.0.1" http://127.0.0.1:5173 "npm run test:e2e"
+          working-directory: ./frontend
+          env:
+            VITE_BACKEND_URL: "http://localhost:4000"
+            APP_URL: "http://127.0.0.1:5173"
 
-    - name: Build Frontend for Production
-      run: npm run build
-      working-directory: ./frontend
+        - name: Build Frontend for Production
+          run: npm run build
+          working-directory: ./frontend
 
   sonarcloud-backend:
     runs-on: ubuntu-latest
     needs: build-and-test-backend
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -113,6 +114,7 @@ jobs:
   sonarcloud-frontend:
     runs-on: ubuntu-latest
     needs: build-and-test-frontend
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
