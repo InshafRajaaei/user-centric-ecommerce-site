@@ -59,16 +59,7 @@ jobs:
       run: npm ci
       working-directory: ./frontend
 
-    # Start Vite dev server in background
-    - name: Start Frontend Dev Server
-      run: npm run dev -- --host &
-      working-directory: ./frontend
-
-    # Wait until server is truly listening
-    - name: Wait for Frontend to be Ready
-      run: npx wait-on http://localhost:5173
-
-    # Run Selenium/Webdriver E2E tests
+    # Run E2E Tests with Vite dev server using start-server-and-test
     - name: Run Frontend E2E Tests
       run: npx start-server-and-test "npm run dev -- --host 0.0.0.0" http://localhost:5173 "npm run test:e2e"
       working-directory: ./frontend
