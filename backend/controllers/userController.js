@@ -158,9 +158,9 @@ const registerUser = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
+    const sanitizedName = validator.escape(name.trim());
     const newUser = new userModel({
-      name,
+      name: sanitizedName, 
       email,
       password: hashedPassword
     });
@@ -175,23 +175,50 @@ const registerUser = async (req, res) => {
   }
 };
 
-const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+// const adminLogin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign(email + password, process.env.JWT_SECRET);
-      res.json({ success: true, token });
-    } else {
-      res.json({ success: false, message: "Invalid credentials" });
+//     if (
+//       email === process.env.ADMIN_EMAIL &&
+//       password === process.env.ADMIN_PASSWORD
+//     ) {
+//       const token = jwt.sign(email + password, process.env.JWT_SECRET);
+//       res.json({ success: true, token });
+//     } else {
+//       res.json({ success: false, message: "Invalid credentials" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
+//Route for admin login
+const adminLogin = async (req,res) => {
+    try {
+        const {email,password} = req.body
+
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            // FIX: Create proper JWT payload instead of string concatenation
+            const token = jwt.sign(
+                { 
+                    email: email,
+                    role: 'admin',
+                    timestamp: Date.now()
+                }, 
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' } // Added expiration for security
+            );
+            res.json({success:true,token})
+        } else {
+            res.json({success:false,message:"Invalid credential"})
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:error.message})
     }
-  } catch (error) {
-    console.error(error);
-    res.json({ success: false, message: error.message });
-  }
 };
 
 export { loginUser, registerUser, adminLogin };

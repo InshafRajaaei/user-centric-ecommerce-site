@@ -1,4 +1,3 @@
-# backend/features/cart.feature
 Feature: Shopping Cart Management
     As a logged-in user
     I want to manage my shopping cart

@@ -1,10 +1,8 @@
-// backend/features/step_definitions/cartSteps.js
 import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from 'chai';          // Make sure `chai` is installed: npm install --save-dev chai
+import { expect } from 'chai';
 import userModel from '../../models/userModel.js'; 
 import { updateCart } from '../../controllers/cartController.js';
 
-// Mock objects to simulate Express req/res
 let mockRequest, mockResponse;
 let actualCartData;
 
@@ -15,7 +13,7 @@ Given('I am a logged-in user with ID {string}', function (userId) {
 Given(
   'my cart contains {int} unit of product {string} in size {string}',
   function (initialQty, itemId, size) {
-    // Setup the initial cart state in our mock database
+    // Mock the userModel methods to simulate database behavior
     userModel.findById = async (id) => {
       return {
         cartData: { [itemId]: { [size]: initialQty } },
