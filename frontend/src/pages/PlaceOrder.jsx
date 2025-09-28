@@ -5,9 +5,9 @@ import { assets } from '../assets/assets'
 import { ShopContext } from '../context/ShopContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
-// import { response } from 'express'
 
+// import { response } from 'express'
+//some errors fixed
 const PlaceOrder = () => {
 
   const [method,setMethod] = useState('cod');
