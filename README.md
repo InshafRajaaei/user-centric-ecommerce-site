@@ -112,50 +112,32 @@ ryzna-ecommerce/
 
 📱 Usage
 For Customers
-
 Browse products with advanced filters
-
 Add items to cart (with size/quantity)
-
 Create account or login
-
 Proceed to secure checkout
-
 Pay with Stripe/Razorpay
-
 Track orders in dashboard
 
 For Administrators
-
 Access admin panel at /admin
-
 Manage products & upload images
-
 Process orders & update status
-
 Manage stock levels
-
 Monitor users & sales activity
 
 🛠️ Built With
-
 Frontend: React, React Router, Context API, Axios, TailwindCSS
-
 Backend: Node.js, Express.js, MongoDB, Mongoose
-
 Authentication: JWT, bcryptjs
-
 Payment: Stripe, Razorpay
-
 Storage: Cloudinary, Multer
 
 Deployment: Vercel, Heroku, MongoDB Atlas
+
 🙏 Acknowledgments
-
 Inspired by modern e-commerce platforms
-
 UI crafted with Tailwind CSS
-
 Icons from open source libraries
 
 ⭐ If you like this project, consider giving it a star!
