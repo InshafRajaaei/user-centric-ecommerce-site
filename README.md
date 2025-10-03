@@ -77,7 +77,7 @@ cp .env.example .env
 # Start the server
 npm run server
 
-Admin Panel Setup
+###Admin Panel Setup
 
 # Navigate to the admin-panel directory
 cd ../admin-panel
