@@ -76,9 +76,11 @@ cp .env.example .env
 
 # Start the server
 npm run server
+```
 
-###Admin Panel Setup
+### Admin Panel Setup
 
+```bash
 # Navigate to the admin-panel directory
 cd ../admin-panel
 
@@ -93,3 +95,102 @@ cp .env.example .env
 
 # Start the development server
 npm run dev
+```
+
+### 🔧 Environment Variables
+
+#### Backend (`/backend/.env`)
+
+```env
+MONGODB_URL=your_mongodb_connection_string
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_SECRET_KEY=your_cloudinary_secret_key
+CLOUDINARY_NAME=your_cloudinary_name
+JWT_SECRET=your_jwt_secret_key
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin_password
+STRIPE_SECRET_KEY=your_stripe_secret_key
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+PORT=4000
+```
+
+#### Frontend (`/frontend/.env` and `/admin-panel/.env`)
+
+```env
+VITE_BACKEND_URL=http://localhost:4000
+```
+
+---
+
+## 🏗️ Project Structure
+
+```
+ryzna-ecommerce/
+├── backend/
+│   ├── config/          # Database & service configurations
+│   ├── controllers/     # Route controllers
+│   ├── middleware/      # Custom middleware
+│   ├── models/          # MongoDB models
+│   ├── routes/          # API routes
+│   └── server.js        # Express server
+├── frontend/
+│   ├── public/          # Static assets
+│   ├── src/
+│   │   ├── components/  # Reusable components
+│   │   ├── context/     # React context providers
+│   │   ├── pages/       # Page components
+│   │   ├── assets/      # Images & static files
+│   │   └── App.jsx      # Main App component
+├── admin-panel/
+│   ├── src/
+│   │   ├── components/  # Admin components
+│   │   ├── pages/       # Admin pages
+│   │   └── App.jsx      # Admin App component
+└── README.md
+```
+
+---
+
+## 📱 Usage
+
+### For Customers
+
+1.  Browse products with advanced filters.
+2.  Add items to the cart (with size/quantity).
+3.  Create an account or log in.
+4.  Proceed to a secure checkout.
+5.  Pay with Stripe or Razorpay.
+6.  Track orders in your user dashboard.
+
+### For Administrators
+
+1.  Access the admin panel at `/admin`.
+2.  Manage products & upload images.
+3.  Process orders & update their status.
+4.  Manage stock levels.
+5.  Monitor users & sales activity.
+
+---
+
+## 🛠️ Built With
+
+-   **Frontend:** React, React Router, Context API, Axios, TailwindCSS
+-   **Backend:** Node.js, Express.js, MongoDB, Mongoose
+-   **Authentication:** JWT, bcryptjs
+-   **Payment:** Stripe, Razorpay
+-   **Storage:** Cloudinary, Multer
+-   **Deployment:** Vercel, Heroku, MongoDB Atlas
+
+---
+
+## 🙏 Acknowledgments
+
+-   Inspired by modern e-commerce platforms.
+-   UI crafted with the amazing Tailwind CSS.
+-   Icons from various open-source libraries.
+
+---
+
+⭐ If you like this project, consider giving it a star!
+```
