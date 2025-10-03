@@ -76,3 +76,20 @@ cp .env.example .env
 
 # Start the server
 npm run server
+
+Admin Panel Setup
+
+# Navigate to the admin-panel directory
+cd ../admin-panel
+
+# Install dependencies
+npm install
+
+# Create the environment file from the example
+cp .env.example .env
+
+# Edit .env with your configuration
+# (see Environment Variables section below)
+
+# Start the development server
+npm run dev
