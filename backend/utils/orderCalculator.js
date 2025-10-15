@@ -1,4 +1,3 @@
-// backend/utils/orderCalculator.js
 /*
 RED PHASE
 
@@ -22,7 +21,6 @@ export function calculateOrderTotal(subtotal, deliveryFee) {
   let discountApplied = 0;
   let finalTotal = total;
 
-  // Apply 10% discount if order total is 5000 or more
   if (total >= 5000) {
     discountApplied = total * 0.1;
     finalTotal = total - discountApplied;
@@ -40,7 +38,6 @@ export function calculateOrderTotal(subtotal, deliveryFee) {
 
 // REFACTOR PHASE
 export function calculateOrderTotal(subtotal, deliveryFee) {
-  // Input validation - prevents negative subtotals
   if (subtotal < 0) {
     throw new Error('Subtotal cannot be negative');
   }
@@ -49,7 +46,6 @@ export function calculateOrderTotal(subtotal, deliveryFee) {
   let discountApplied = 0;
   let finalTotal = total;
 
-  // Apply 10% discount if order total is 5000 or more
   if (total >= 5000) {
     discountApplied = total * 0.1;
     finalTotal = total - discountApplied;

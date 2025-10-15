@@ -13,7 +13,7 @@ Given('I am a logged-in user with ID {string}', function (userId) {
 Given(
   'my cart contains {int} unit of product {string} in size {string}',
   function (initialQty, itemId, size) {
-    // Mock the userModel methods to simulate database behavior
+    // Mock the userModel
     userModel.findById = async (id) => {
       return {
         cartData: { [itemId]: { [size]: initialQty } },
@@ -21,7 +21,7 @@ Given(
     };
 
     userModel.findByIdAndUpdate = async (id, update) => {
-      actualCartData = update.cartData; // Capture the updated cart for assertion
+      actualCartData = update.cartData; 
       return {};
     };
   }
@@ -49,7 +49,7 @@ When(
 Then(
   'my cart should contain {int} units of product {string} in size {string}',
   function (expectedQty, itemId, size) {
-    // Check the data that was passed to findByIdAndUpdate
+  
     expect(actualCartData[itemId][size]).to.equal(expectedQty);
   }
 );

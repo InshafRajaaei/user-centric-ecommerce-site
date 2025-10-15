@@ -4,14 +4,13 @@ import app from '../../server.js';
 import userModel from '../../models/userModel.js';
 import bcrypt from 'bcrypt';
 
-// Test user data
+
 const TEST_USER = {
   name: 'Test User',
   email: 'test@example.com',
   password: 'password123'
 };
 
-// Global setup already connects to DB in tests/setup.js
 afterAll(async () => {
   await mongoose.disconnect();
 });
@@ -30,7 +29,6 @@ describe('POST /api/user/register', () => {
     expect(response.body.success).toBe(true);
     expect(response.body.token).toBeDefined();
 
-    // Verify user was actually created in database
     const userInDb = await userModel.findOne({ email: TEST_USER.email });
     expect(userInDb).toBeDefined();
     expect(userInDb.name).toBe(TEST_USER.name);
@@ -38,12 +36,12 @@ describe('POST /api/user/register', () => {
   });
 
   it('should not register a user with an existing email', async () => {
-    // First, create a user
+   
     await request(app)
       .post('/api/user/register')
       .send(TEST_USER);
 
-    // Try to create another user with same email
+    
     const response = await request(app)
       .post('/api/user/register')
       .send(TEST_USER);
@@ -56,7 +54,7 @@ describe('POST /api/user/register', () => {
 
 describe('POST /api/user/login', () => {
   beforeEach(async () => {
-    // Create a user before each login test
+  
     const hashedPassword = await bcrypt.hash(TEST_USER.password, 10);
     await userModel.create({
       name: TEST_USER.name,
