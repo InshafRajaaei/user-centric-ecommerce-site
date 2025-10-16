@@ -7,8 +7,6 @@
 
 ---
 
-![RYNZA Preview](https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=RYNZA+E-Commerce+Platform)
-
 **RYNZA** is a **full-stack e-commerce platform** built with the **MERN stack**, featuring:
 - ✅ Modern responsive UI
 - ✅ Secure payment processing (Stripe & Razorpay)
