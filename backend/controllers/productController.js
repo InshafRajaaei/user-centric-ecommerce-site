@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary"
 import productModel from "../models/productModel.js"
+import validator from "validator";
 //import { Await, resolvePath } from "react-router-dom"
 
 // function for add product
