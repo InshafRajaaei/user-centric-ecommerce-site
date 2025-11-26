@@ -81,7 +81,9 @@ const initializeApp = async () => {
   }
 };
 
-// Start the application
-initializeApp();
+// Start the application only if not in Vercel (Vercel handles starting the server)
+if (process.env.NODE_ENV !== 'production') {
+  initializeApp();
+}
 
 export default app
