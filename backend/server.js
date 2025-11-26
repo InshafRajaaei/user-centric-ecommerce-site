@@ -1,4 +1,5 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import cors from 'cors'
 import 'dotenv/config'
 import connectDB from './config/mongodb.js'
@@ -56,6 +57,21 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString() 
   })
 })
+
+// Debug endpoint to check environment variables (Safe - doesn't expose values)
+app.get('/api/debug-config', (req, res) => {
+  res.json({
+    env_vars: {
+      MONGODB_URI: !!process.env.MONGODB_URI,
+      MONGODB_URL: !!process.env.MONGODB_URL,
+      CLOUDINARY_API_KEY: !!process.env.CLOUDINARY_API_KEY,
+      CLOUDINARY_NAME: !!process.env.CLOUDINARY_NAME,
+      NODE_ENV: process.env.NODE_ENV
+    },
+    mongo_connection: mongoose.connection.readyState, // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Initialize database and cloudinary connections
 const initializeApp = async () => {
