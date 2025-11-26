@@ -17,7 +17,8 @@ const connectDB = async () => {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(`${process.env.MONGODB_URI}/e-commerce`, opts).then((mongoose) => {
+    const mongoURI = process.env.MONGODB_URI || process.env.MONGODB_URL;
+    cached.promise = mongoose.connect(`${mongoURI}/e-commerce`, opts).then((mongoose) => {
       console.log("New MongoDB connection established");
       return mongoose;
     });
